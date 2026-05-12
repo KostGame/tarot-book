@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Справочник Таро · 78 карт</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #100d16;
+      --panel: rgba(28, 22, 38, 0.92);
+      --panel-2: rgba(42, 33, 55, 0.82);
+      --text: #f4edf8;
+      --muted: #bdb0c9;
+      --soft: #7e718d;
+      --gold: #e5bd68;
+      --gold-2: #f5d993;
+      --line: rgba(229, 189, 104, 0.22);
+      --danger: #ff9d9d;
+      --ok: #a6e3b1;
+      --shadow: 0 22px 70px rgba(0,0,0,.42);
+      --cardW: 76px;
+      --cardImgH: 110px;
+      --radius: 18px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(101, 76, 148, .34), transparent 34%),
+        radial-gradient(circle at 88% 18%, rgba(188, 133, 55, .18), transparent 30%),
+        linear-gradient(135deg, #0d0b12 0%, #171020 46%, #0d0c12 100%);
+      color: var(--text);
+      overflow: hidden;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app {
+      min-height: 100%;
+      height: 100%;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .topbar {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 14px;
+      background: rgba(20, 16, 27, .86);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      display: grid;
+      grid-template-columns: minmax(240px, 1.1fr) minmax(420px, 2fr) auto;
+      gap: 14px;
+      align-items: center;
+    }
+    .brand h1 { margin: 0; font-size: clamp(20px, 2vw, 32px); letter-spacing: .02em; }
+    .brand p { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
+    .controls { display: grid; grid-template-columns: 1.2fr .72fr .72fr .72fr; gap: 8px; }
+    .controls input, .controls select, .assetInput {
+      width: 100%;
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 10px 12px;
+      outline: none;
+    }
+    .controls input:focus, .assetInput:focus { border-color: rgba(229,189,104,.66); box-shadow: 0 0 0 3px rgba(229,189,104,.12); }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .btn {
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 9px 12px;
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(229,189,104,.45); background: rgba(229,189,104,.12); }
+    .btn.primary { background: linear-gradient(135deg, rgba(229,189,104,.92), rgba(178,118,48,.9)); color: #201509; border-color: rgba(255,226,157,.55); font-weight: 750; }
+    .btn.small { padding: 7px 10px; font-size: 13px; }
+    .btn.active { border-color: rgba(245,217,147,.7); background: rgba(229,189,104,.16); color: var(--gold-2); }
+    .assetPanel {
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(20, 16, 27, .72);
+      border-radius: 20px;
+      padding: 10px;
+      display: none;
+      gap: 8px;
+      align-items: center;
+      grid-template-columns: 1fr auto auto auto auto;
+    }
+    .assetPanel.open { display: grid; }
+    .hint { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .statusLine {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 0 4px;
+    }
+    .main {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 290px;
+      gap: 12px;
+    }
+    .gridWrap {
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(15, 12, 20, .72);
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+    .cardsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--cardW), 1fr));
+      gap: 9px;
+      align-items: stretch;
+    }
+    .tile {
+      min-width: 0;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+      border-radius: 16px;
+      padding: 6px;
+      color: var(--text);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-height: calc(var(--cardImgH) + 42px);
+      position: relative;
+      overflow: hidden;
+    }
+    .tile:hover, .tile:focus-visible { border-color: rgba(245,217,147,.72); outline: none; transform: translateY(-1px); }
+    .tile img {
+      width: 100%;
+      height: var(--cardImgH);
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 11px;
+      background: #21192b;
+      box-shadow: 0 8px 18px rgba(0,0,0,.28);
+    }
+    .tile .name { font-size: 11px; line-height: 1.08; min-height: 24px; display: flex; align-items: center; justify-content: center; }
+    .tile .meta { color: var(--soft); font-size: 10px; line-height: 1; }
+    .tile .favMark { position: absolute; top: 7px; right: 7px; color: var(--gold-2); text-shadow: 0 1px 4px #000; display: none; }
+    .tile.favorite .favMark { display: block; }
+    .tile.missing img { opacity: .18; }
+    .tile.missing::after { content: "нет img"; position: absolute; top: 42px; left: 6px; right: 6px; color: var(--danger); font-size: 11px; }
+    .side {
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(20, 16, 27, .78);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .side h2 { font-size: 16px; margin: 0 0 8px; }
+    .side h3 { font-size: 13px; margin: 16px 0 8px; color: var(--gold-2); }
+    .side p, .side li { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .side ul { padding-left: 18px; margin: 8px 0; }
+    .legend { display: grid; gap: 8px; }
+    .legendItem { border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 9px; background: rgba(255,255,255,.04); }
+    .kbd { padding: 2px 6px; border: 1px solid rgba(255,255,255,.18); border-radius: 6px; color: var(--gold-2); background: rgba(0,0,0,.18); }
+    dialog {
+      width: min(1120px, calc(100vw - 28px));
+      height: min(760px, calc(100vh - 28px));
+      border: 1px solid rgba(245,217,147,.35);
+      border-radius: 26px;
+      padding: 0;
+      color: var(--text);
+      background: rgba(15, 12, 20, .97);
+      box-shadow: 0 30px 100px rgba(0,0,0,.65);
+      overflow: hidden;
+    }
+    dialog::backdrop { background: rgba(0,0,0,.62); backdrop-filter: blur(4px); }
+    .modal { height: 100%; display: grid; grid-template-columns: 370px 1fr; min-height: 0; }
+    .modalImagePane {
+      padding: 16px;
+      border-right: 1px solid rgba(255,255,255,.09);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(229,189,104,.16), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+    .modalImagePane img {
+      width: 100%;
+      min-height: 0;
+      flex: 1;
+      object-fit: contain;
+      border-radius: 18px;
+      background: #21192b;
+      box-shadow: 0 18px 55px rgba(0,0,0,.42);
+    }
+    .modalButtons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .modalContent { min-height: 0; overflow: auto; padding: 18px 20px 24px; }
+    .modalHead { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; position: sticky; top: 0; background: linear-gradient(180deg, rgba(15,12,20,1), rgba(15,12,20,.92)); padding-bottom: 12px; z-index: 2; }
+    .modalHead h2 { margin: 0; font-size: 29px; line-height: 1.1; }
+    .modalHead .sub { color: var(--muted); margin-top: 5px; font-size: 13px; }
+    .closeBtn { border-radius: 999px; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.14); color: var(--text); background: rgba(255,255,255,.06); }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+    .chip { border: 1px solid rgba(229,189,104,.24); color: var(--gold-2); background: rgba(229,189,104,.09); border-radius: 999px; padding: 5px 9px; font-size: 12px; }
+    .detailGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .box { border: 1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.045); border-radius: 16px; padding: 12px; }
+    .box.wide { grid-column: 1 / -1; }
+    .box h3 { margin: 0 0 8px; color: var(--gold-2); font-size: 14px; }
+    .box p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 14px; }
+    .box ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.5; font-size: 14px; }
+    .hiddenMeaning .meaningText { filter: blur(8px); user-select: none; pointer-events: none; opacity: .55; }
+    .trainingPanel { display: none; }
+    .trainingOn .trainingPanel { display: block; }
+    .footerNote { margin-top: 14px; color: var(--soft); font-size: 12px; line-height: 1.4; }
+    @media (max-width: 1100px) {
+      body { overflow: auto; }
+      .app { height: auto; min-height: 100%; }
+      .topbar { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .main { grid-template-columns: 1fr; }
+      .side { display: none; }
+      dialog { height: calc(100vh - 24px); }
+      .modal { grid-template-columns: 1fr; overflow: auto; }
+      .modalImagePane { min-height: 420px; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.09); }
+      .modalContent { overflow: visible; }
+    }
+    @media (max-width: 720px) {
+      :root { --cardW: 72px; --cardImgH: 105px; }
+      .app { padding: 8px; }
+      .controls { grid-template-columns: 1fr; }
+      .assetPanel.open { grid-template-columns: 1fr; }
+      .detailGrid { grid-template-columns: 1fr; }
+      .modalHead h2 { font-size: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="topbar" aria-label="Панель управления">
+      <div class="brand">
+        <h1>Справочник Таро</h1>
+        <p>78 карт на одном экране. Клик по карте открывает подробности, стрелки перелистывают колоду.</p>
+      </div>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Поиск: Мир, жезлы, выбор, деньги..." autocomplete="off" />
+        <select id="groupFilter" aria-label="Группа карт">
+          <option value="all">Все группы</option>
+          <option value="major">Старшие арканы</option>
+          <option value="wands">Жезлы</option>
+          <option value="cups">Кубки</option>
+          <option value="swords">Мечи</option>
+          <option value="pentacles">Пентакли</option>
+        </select>
+        <select id="modeFilter" aria-label="Режим отображения">
+          <option value="all">Все карты</option>
+          <option value="favorites">Избранное</option>
+          <option value="court">Только двор</option>
+          <option value="aces">Только тузы</option>
+        </select>
+        <select id="density" aria-label="Плотность сетки">
+          <option value="compact">Компактно</option>
+          <option value="normal">Крупнее</option>
+          <option value="tiny">Максимум на экран</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="btn small" id="assetToggle">Путь к картинкам</button>
+        <button class="btn small" id="trainingToggle">Тренировка</button>
+        <button class="btn small" id="randomBtn">Случайная</button>
+        <button class="btn primary small" id="dayBtn">Карта дня</button>
+      </div>
+    </section>
+
+    <section class="assetPanel" id="assetPanel" aria-label="Настройка ассетов">
+      <input class="assetInput" id="assetBase" placeholder="assets/cards/ или file:///D:/.../assets/cards/" />
+      <button class="btn small" id="saveAssetBase">Сохранить</button>
+      <button class="btn small" id="useRelative">assets/cards/</button>
+      <button class="btn small" id="useLocalFull">D: путь</button>
+      <button class="btn small" id="useRemote">GitHub Pages</button>
+      <div class="hint" style="grid-column: 1 / -1;">Для локального запуска положи этот HTML в корень репозитория Tarot рядом с папкой <b>assets</b>. Либо укажи полный путь: <code>file:///D:/Ydisk/YandexDisk/AI/Git/Tarot/assets/cards/</code>. В предпросмотре удобнее использовать GitHub Pages.</div>
+    </section>
+
+    <div class="statusLine">
+      <div id="countInfo">Загрузка...</div>
+      <div>Клавиши: <span class="kbd">/</span> поиск, <span class="kbd">←</span><span class="kbd">→</span> листать, <span class="kbd">Esc</span> закрыть</div>
+    </div>
+
+    <section class="main">
+      <section class="gridWrap" aria-label="Сетка карт">
+        <div class="cardsGrid" id="cardsGrid"></div>
+      </section>
+      <aside class="side">
+        <h2>Как учиться по справочнику</h2>
+        <p>Открывай карту и сначала пробуй сам назвать смысл. Потом смотри блоки: ядро, светлая сторона, тень, совет, сферы жизни.</p>
+        <h3>Формула младших арканов</h3>
+        <div class="legend">
+          <div class="legendItem"><b>Масть</b><p>Показывает область: воля, эмоции, ум или материальный план.</p></div>
+          <div class="legendItem"><b>Ранг</b><p>Показывает стадию процесса: начало, выбор, рост, кризис, итог.</p></div>
+          <div class="legendItem"><b>Позиция в раскладе</b><p>Меняет акцент: причина, совет, риск, ресурс, итог.</p></div>
+        </div>
+        <h3>Быстрые привычки</h3>
+        <ul>
+          <li>Не выбирай одно значение из списка случайно. Сначала спроси: «о какой сфере вопрос?»</li>
+          <li>В раскладе карта отвечает на свое место, а не на весь вопрос сразу.</li>
+          <li>В режиме тренировки трактовки скрыты, пока ты их не откроешь.</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="detailDialog" aria-label="Подробности карты">
+    <div class="modal" id="modalRoot">
+      <div class="modalImagePane">
+        <img id="modalImg" alt="" />
+        <div class="modalButtons">
+          <button class="btn small" id="prevBtn">← Назад</button>
+          <button class="btn small" id="nextBtn">Вперед →</button>
+          <button class="btn small" id="favBtn">☆ В избранное</button>
+          <button class="btn small" id="revealBtn">Показать</button>
+        </div>
+      </div>
+      <div class="modalContent" id="modalContent">
+        <div class="modalHead">
+          <div>
+            <h2 id="modalTitle"></h2>
+            <div class="sub" id="modalSub"></div>
+          </div>
+          <button class="closeBtn" id="closeBtn" aria-label="Закрыть">×</button>
+        </div>
+        <div class="chips" id="chips"></div>
+        <div id="detailBody" class="meaningText"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const REMOTE_BASE = 'https://kostgame.github.io/Tarot/assets/cards/';
+    const RELATIVE_BASE = 'assets/cards/';
+    const LOCAL_FULL_BASE = 'file:///D:/Ydisk/YandexDisk/AI/Git/Tarot/assets/cards/';
+
+    const MAJORS = [
+      ['major-00-fool','Шут','major-00-fool.jpg','свобода, доверие, новый путь','начало без гарантий, легкость, шаг в неизвестность','На день: пробовать новое, но не терять контакт с реальностью. Совет: не перегружай решение страхом, сделай первый небольшой шаг. Тень: наивность, хаос, уход от ответственности.'],
+      ['major-01-magician','Маг','major-01-magician.jpg','воля, навык, намерение','я могу, у меня есть инструменты','На день: действовать руками и словами. Совет: сформулируй цель и используй то, что уже есть. Тень: манипуляция, пустые обещания, суета ради эффекта.'],
+      ['major-02-high-priestess','Жрица','major-02-high-priestess.jpg','интуиция, тайна, пауза','сначала почувствовать, потом говорить','На день: наблюдать и собирать скрытые сигналы. Совет: не торопись раскрывать карты. Тень: холодность, пассивность, уход в догадки.'],
+      ['major-03-empress','Императрица','major-03-empress.jpg','рост, забота, плодородие','создать условия, чтобы жизнь сама росла','На день: питать проект, тело, отношения. Совет: добавь тепла и ресурса. Тень: чрезмерная опека, лень, зависимость от комфорта.'],
+      ['major-04-emperor','Император','major-04-emperor.jpg','структура, власть, границы','порядок сильнее импульса','На день: навести порядок и принять управленческое решение. Совет: обозначь правила. Тень: жесткость, контроль, страх потерять авторитет.'],
+      ['major-05-hierophant','Иерофант','major-05-hierophant.jpg','традиция, учитель, система','опереться на знание и правила','На день: учиться, объяснять, сверяться с принципами. Совет: ищи проверенную рамку. Тень: догматизм, морализаторство, зависимость от одобрения.'],
+      ['major-06-lovers','Влюбленные','major-06-lovers.jpg','выбор, союз, ценности','выбрать сердцем и признать последствия','На день: важен честный выбор. Совет: согласуй желание и ценности. Тень: раздвоенность, соблазн, перекладывание решения.'],
+      ['major-07-chariot','Колесница','major-07-chariot.jpg','движение, победа, курс','держать поводья и ехать вперед','На день: собраться и продвинуться. Совет: управляй разнонаправленными силами. Тень: напор без чувствительности, гонка, конфликт эго.'],
+      ['major-08-strength','Сила','major-08-strength.jpg','мягкая сила, самообладание, страсть','укротить, а не сломать','На день: действовать спокойно, но уверенно. Совет: приручи импульс через внимание. Тень: подавление, вспышки, борьба с собой.'],
+      ['major-09-hermit','Отшельник','major-09-hermit.jpg','поиск смысла, одиночество, опыт','отойти вглубь, чтобы увидеть свет','На день: тишина полезнее шума. Совет: спроси себя, что правда важно. Тень: изоляция, закрытость, холодная дистанция.'],
+      ['major-10-wheel-of-fortune','Колесо Фортуны','major-10-wheel-of-fortune.jpg','цикл, шанс, поворот','момент меняется, лови ритм','На день: возможен неожиданный поворот. Совет: будь гибче и используй шанс. Тень: фатализм, азарт, ощущение, что все не в твоих руках.'],
+      ['major-11-justice','Справедливость','major-11-justice.jpg','баланс, закон, решение','честная причина дает честное следствие','На день: взвешивать факты. Совет: будь точен и справедлив. Тень: суровость, формализм, желание наказать.'],
+      ['major-12-hanged-man','Повешенный','major-12-hanged-man.jpg','пауза, иной взгляд, жертва','перевернуть взгляд, чтобы выйти из тупика','На день: не продавить, а переосмыслить. Совет: отпусти старый способ контроля. Тень: роль жертвы, зависание, бессилие.'],
+      ['major-13-death','Смерть','major-13-death.jpg','завершение, трансформация, очищение','старое уходит, чтобы освободить место','На день: закрыть хвост или отказаться от лишнего. Совет: не держись за форму, которая уже умерла. Тень: страх перемен, резкость, обнуление без заботы.'],
+      ['major-14-temperance','Умеренность','major-14-temperance.jpg','исцеление, мера, смешение','найти правильную пропорцию','На день: действовать мягко и дозированно. Совет: смешай противоположности, не спеши. Тень: затягивание, разбавленность, страх яркого решения.'],
+      ['major-15-devil','Дьявол','major-15-devil.jpg','зависимость, искушение, энергия желания','увидеть цепь и назвать цену','На день: заметить привязки и соблазны. Совет: честно посмотри, что тобой управляет. Тень: зависимость, стыд, манипуляции.'],
+      ['major-16-tower','Башня','major-16-tower.jpg','слом, правда, освобождение','то, что держалось на иллюзии, рушится','На день: возможен резкий инсайт или поломка старой схемы. Совет: спасай главное, не фасад. Тень: разрушительность, паника, гордыня.'],
+      ['major-17-star','Звезда','major-17-star.jpg','надежда, вдохновение, восстановление','тихий свет ведет дальше','На день: восстановить веру и силы. Совет: делай маленькое красивое действие на будущее. Тень: мечта без шага, наивная надежда, расфокус.'],
+      ['major-18-moon','Луна','major-18-moon.jpg','туман, страхи, подсознание','идти через неопределенность осторожно','На день: не все ясно. Совет: проверяй факты и слушай сны, тело, тревогу. Тень: иллюзии, накрутка, самообман.'],
+      ['major-19-sun','Солнце','major-19-sun.jpg','ясность, радость, успех','выйти на свет и не усложнять','На день: больше простоты и открытости. Совет: покажи результат, порадуйся живому. Тень: самоуверенность, инфантильность, выгорание от постоянного позитива.'],
+      ['major-20-judgement','Суд','major-20-judgement.jpg','пробуждение, зов, итог','услышать призыв и выйти из старой роли','На день: всплывает важная тема. Совет: признай, что этап завершен, и поднимайся на новый уровень. Тень: вина, самосуд, страх оценки.'],
+      ['major-21-world','Мир','major-21-world.jpg','завершение, целостность, интеграция','цикл завершен, опыт собран','На день: довести до красивой точки. Совет: увидь всю картину и закрепи результат. Тень: застревание на финише, страх нового цикла, желание идеальности.']
+    ];
+
+    const SUITS = {
+      wands: { title: 'Жезлы', element: 'Огонь', sphere: 'воля, действие, энергия, амбиции, творчество', advice: 'спроси, куда направлена энергия и не сжигает ли она человека', file: 'wands', ru: 'жезлов' },
+      cups: { title: 'Кубки', element: 'Вода', sphere: 'чувства, близость, эмпатия, память, желания сердца', advice: 'спроси, что человек чувствует и какой эмоциональной правды избегает', file: 'cups', ru: 'кубков' },
+      swords: { title: 'Мечи', element: 'Воздух', sphere: 'мысли, решения, конфликт, слова, анализ', advice: 'спроси, какая мысль режет ситуацию и где нужна честность', file: 'swords', ru: 'мечей' },
+      pentacles: { title: 'Пентакли', element: 'Земля', sphere: 'деньги, тело, работа, устойчивость, материальный результат', advice: 'спроси, что реально, измеримо и требует терпения', file: 'pentacles', ru: 'пентаклей' }
+    };
+    const RANKS = [
+      ['01','ace','Туз','импульс, потенциал, зерно','начало масти, чистая возможность','начни с малого, но настоящего'],
+      ['02','two','Двойка','выбор, баланс, пара','две силы ищут равновесие','не спеши, сравни варианты'],
+      ['03','three','Тройка','рост, первые результаты, взаимодействие','энергия выходит наружу и начинает расти','собери поддержку и расширь взгляд'],
+      ['04','four','Четверка','стабильность, пауза, форма','процесс закрепляется или застывает','проверь, это опора или клетка'],
+      ['05','five','Пятерка','кризис, трение, урок','система дает сбой и требует пересборки','не драматизируй, найди урок конфликта'],
+      ['06','six','Шестерка','гармонизация, обмен, восстановление','после кризиса появляется движение к равновесию','ищи честный обмен и поддержку'],
+      ['07','seven','Семерка','испытание, стратегия, внутренняя проверка','нужно выбрать способ защиты или роста','не действуй автоматически, выбери тактику'],
+      ['08','eight','Восьмерка','движение, навык, интенсивность','процесс ускоряется или требует дисциплины','включи повторение, скорость или фокус'],
+      ['09','nine','Девятка','накопление, личный итог, зрелость','почти финал, результат уже ощущается лично','оцени цену достигнутого'],
+      ['10','ten','Десятка','завершение, предел, переход','цикл масти дошел до максимума','сними перегруз и готовь следующий этап'],
+      ['11','page','Паж','новичок, весть, любопытство','ученик масти, первый контакт с ее энергией','задай вопрос и попробуй безопасно'],
+      ['12','knight','Рыцарь','движение, стиль действия, импульс','активный проводник масти','смотри, как именно человек движется к цели'],
+      ['13','queen','Королева','зрелое принятие, внутренняя власть','масть проживается изнутри','береги качество среды и эмоциональный тон'],
+      ['14','king','Король','управление, внешняя власть, мастерство','масть выражена как решение и ответственность','возьми управление без лишнего давления']
+    ];
+    const SPECIFIC = {
+      'wands-01-ace': 'искра, идея, желание начать, творческий заряд',
+      'wands-02-two': 'планирование, горизонт, выбор направления',
+      'wands-03-three': 'расширение, первые плоды, ожидание кораблей',
+      'wands-04-four': 'праздник, база, дом, закрепление успеха',
+      'wands-05-five': 'соревнование, шум, борьба амбиций',
+      'wands-06-six': 'признание, победа, лидерство на виду',
+      'wands-07-seven': 'защита позиции, давление, необходимость стоять за себя',
+      'wands-08-eight': 'быстрые события, сообщения, ускорение',
+      'wands-09-nine': 'настороженность, опыт, последний рубеж',
+      'wands-10-ten': 'перегруз ответственностью, слишком много задач',
+      'wands-11-page': 'энтузиазм, новость, проба себя, смелый интерес',
+      'wands-12-knight': 'рывок, страсть, переезд, нетерпение',
+      'wands-13-queen': 'харизма, уверенность, теплое лидерство',
+      'wands-14-king': 'предпринимательская воля, масштаб, зрелая инициатива',
+      'cups-01-ace': 'новое чувство, открытое сердце, эмоциональный источник',
+      'cups-02-two': 'симпатия, договоренность, встреча на равных',
+      'cups-03-three': 'дружба, радость, круг поддержки',
+      'cups-04-four': 'пресыщение, скука, закрытость к предложению',
+      'cups-05-five': 'сожаление, потеря, фокус на разбитом',
+      'cups-06-six': 'прошлое, нежность, воспоминания, простота',
+      'cups-07-seven': 'фантазии, много вариантов, соблазн иллюзий',
+      'cups-08-eight': 'уход от того, что уже не питает',
+      'cups-09-nine': 'эмоциональное удовлетворение, желание исполняется',
+      'cups-10-ten': 'семейное счастье, согласие, общая радость',
+      'cups-11-page': 'нежное сообщение, романтичность, творческий импульс',
+      'cups-12-knight': 'романтическое предложение, идеализм, мягкое движение',
+      'cups-13-queen': 'эмпатия, глубина, забота, тонкая настройка',
+      'cups-14-king': 'эмоциональная зрелость, спокойная поддержка',
+      'swords-01-ace': 'ясная мысль, правда, решение, интеллектуальный прорыв',
+      'swords-02-two': 'выбор при закрытых глазах, блокировка решения',
+      'swords-03-three': 'болезненная правда, разочарование, сердце и слова',
+      'swords-04-four': 'отдых, пауза ума, восстановление после напряжения',
+      'swords-05-five': 'победа с неприятным осадком, конфликт, эго',
+      'swords-06-six': 'переход, дистанция, выход из тяжелой воды',
+      'swords-07-seven': 'хитрость, стратегия, недосказанность, обходной путь',
+      'swords-08-eight': 'ощущение ловушки, самоограничение, страх шага',
+      'swords-09-nine': 'тревога, бессонные мысли, вина, накрутка',
+      'swords-10-ten': 'ментальный предел, болезненный финал, дальше так нельзя',
+      'swords-11-page': 'наблюдение, вопросы, осторожные новости, бдительность',
+      'swords-12-knight': 'резкий рывок, спор, атака аргументами',
+      'swords-13-queen': 'ясные границы, ум, независимость, честный разговор',
+      'swords-14-king': 'рациональное решение, закон, стратегия, холодная голова',
+      'pentacles-01-ace': 'материальный шанс, ресурс, здоровье, новая опора',
+      'pentacles-02-two': 'баланс ресурсов, juggling, гибкое управление делами',
+      'pentacles-03-three': 'мастерство, команда, признание качества работы',
+      'pentacles-04-four': 'накопление, контроль, безопасность, зажим',
+      'pentacles-05-five': 'нехватка, исключенность, материальная тревога',
+      'pentacles-06-six': 'помощь, обмен, благотворительность, баланс давать и брать',
+      'pentacles-07-seven': 'ожидание результата, терпение, оценка вложений',
+      'pentacles-08-eight': 'ремесло, учеба, повторение, профессиональный рост',
+      'pentacles-09-nine': 'самодостаточность, комфорт, личный достаток',
+      'pentacles-10-ten': 'семья, наследие, система, долгий капитал',
+      'pentacles-11-page': 'учеба, практический шанс, интерес к делу',
+      'pentacles-12-knight': 'надежность, методичность, медленный прогресс',
+      'pentacles-13-queen': 'забота через ресурсы, быт, тело, устойчивость',
+      'pentacles-14-king': 'материальная зрелость, управление ресурсами, результат'
+    };
+
+    function makeMinorCards() {
+      const suitOrder = ['wands','cups','swords','pentacles'];
+      return suitOrder.flatMap(suit => RANKS.map(rank => {
+        const [num, slug, rankRu] = rank;
+        const id = `${suit}-${num}-${slug}`;
+        return { id, name: `${rankRu} ${SUITS[suit].ru[0].toUpperCase() + SUITS[suit].ru.slice(1)}`, file: `${id}.jpg`, type: suit, suit, rank: rankRu, number: num, keywords: SPECIFIC[id] || rank[3] };
+      }));
+    }
+
+    const CARDS = [
+      ...MAJORS.map((m, index) => ({ id: m[0], name: m[1], file: m[2], type: 'major', number: String(index).padStart(2,'0'), keywords: m[3], core: m[4], text: m[5] })),
+      ...makeMinorCards()
+    ];
+
+    const els = {
+      grid: document.getElementById('cardsGrid'),
+      search: document.getElementById('search'),
+      groupFilter: document.getElementById('groupFilter'),
+      modeFilter: document.getElementById('modeFilter'),
+      density: document.getElementById('density'),
+      countInfo: document.getElementById('countInfo'),
+      dialog: document.getElementById('detailDialog'),
+      modalRoot: document.getElementById('modalRoot'),
+      modalImg: document.getElementById('modalImg'),
+      modalTitle: document.getElementById('modalTitle'),
+      modalSub: document.getElementById('modalSub'),
+      chips: document.getElementById('chips'),
+      detailBody: document.getElementById('detailBody'),
+      closeBtn: document.getElementById('closeBtn'),
+      prevBtn: document.getElementById('prevBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      favBtn: document.getElementById('favBtn'),
+      revealBtn: document.getElementById('revealBtn'),
+      trainingToggle: document.getElementById('trainingToggle'),
+      randomBtn: document.getElementById('randomBtn'),
+      dayBtn: document.getElementById('dayBtn'),
+      assetToggle: document.getElementById('assetToggle'),
+      assetPanel: document.getElementById('assetPanel'),
+      assetBase: document.getElementById('assetBase'),
+      saveAssetBase: document.getElementById('saveAssetBase'),
+      useRelative: document.getElementById('useRelative'),
+      useLocalFull: document.getElementById('useLocalFull'),
+      useRemote: document.getElementById('useRemote')
+    };
+
+    let assetBase = localStorage.getItem('tarot-reference-asset-base') || (location.protocol === 'file:' ? RELATIVE_BASE : REMOTE_BASE);
+    let favorites = new Set(JSON.parse(localStorage.getItem('tarot-reference-favorites') || '[]'));
+    let training = localStorage.getItem('tarot-reference-training') === '1';
+    let currentIndex = 0;
+    let filtered = [...CARDS];
+    let revealed = false;
+
+    function normalizeBase(value) {
+      let v = (value || '').trim();
+      if (!v) return RELATIVE_BASE;
+      v = v.replace(/\\/g, '/');
+      if (/^[A-Za-z]:\//.test(v)) v = 'file:///' + v;
+      if (!v.endsWith('/')) v += '/';
+      return v;
+    }
+    function imgSrc(card) { return normalizeBase(assetBase) + card.file; }
+    function saveFavorites() { localStorage.setItem('tarot-reference-favorites', JSON.stringify([...favorites])); }
+    function cardGroupLabel(card) { return card.type === 'major' ? 'Старшие арканы' : SUITS[card.suit].title; }
+    function isCourt(card) { return ['11','12','13','14'].includes(card.number); }
+    function yesNo(card) {
+      if (card.type === 'major') {
+        const positive = ['major-01-magician','major-03-empress','major-06-lovers','major-07-chariot','major-08-strength','major-10-wheel-of-fortune','major-14-temperance','major-17-star','major-19-sun','major-20-judgement','major-21-world'];
+        const caution = ['major-12-hanged-man','major-13-death','major-15-devil','major-16-tower','major-18-moon'];
+        if (positive.includes(card.id)) return 'скорее да, если действовать осознанно';
+        if (caution.includes(card.id)) return 'скорее нет или сначала нужна трансформация';
+        return 'зависит от честного выбора и контекста вопроса';
+      }
+      if (card.suit === 'cups' && ['01','02','03','06','09','10','14'].includes(card.number)) return 'скорее да, особенно в эмоциональных вопросах';
+      if (card.suit === 'wands' && ['01','03','04','06','08','14'].includes(card.number)) return 'скорее да, если есть энергия и инициатива';
+      if (card.suit === 'pentacles' && ['01','03','06','08','09','10','12','14'].includes(card.number)) return 'скорее да, но через практические шаги';
+      if (card.suit === 'swords' && ['03','05','08','09','10'].includes(card.number)) return 'скорее нет или через трудный разговор';
+      return 'нейтрально, смотри соседние карты и позицию';
+    }
+    function minorMeaning(card) {
+      const suit = SUITS[card.suit];
+      const rank = RANKS.find(r => r[0] === card.number);
+      const courtTone = isCourt(card) ? 'В раскладе может описывать человека, стиль поведения или роль, которую нужно включить.' : 'В раскладе чаще описывает событие, состояние или стадию процесса.';
+      return {
+        core: `${rank[4]} В масти ${suit.title.toLowerCase()} это проявляется через ${suit.sphere}.`,
+        light: `${card.keywords}. В плюсе карта дает ясный урок масти: ${rank[5]}.`,
+        shadow: `Перекос карты: энергия ${suit.title.toLowerCase()} уходит в крайность. Возможны спешка, застревание, самообман или чрезмерный контроль, в зависимости от позиции.`,
+        advice: `${rank[5]}. Также ${suit.advice}.`,
+        day: `На день: ${card.keywords}. Следи, как тема ${suit.sphere} проявится в конкретных делах.`,
+        formula: `Формула: ${suit.title} = ${suit.sphere}; ${card.rank} = ${rank[3]}. ${courtTone}`
+      };
+    }
+    function majorMeaning(card) {
+      const [day, advicePart = '', shadowPart = ''] = card.text.split(' Совет: ');
+      const [advice, shadow = shadowPart] = advicePart.split(' Тень: ');
+      return {
+        core: card.core,
+        light: card.keywords,
+        shadow: shadow || 'перекос архетипа, если карта проживается неосознанно',
+        advice: advice || 'смотри контекст вопроса и позицию карты',
+        day,
+        formula: 'Старший аркан показывает архетип, главный урок или крупную внутреннюю тему. В раскладе он обычно сильнее младших карт.'
+      };
+    }
+    function getMeaning(card) { return card.type === 'major' ? majorMeaning(card) : minorMeaning(card); }
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+    }
+    function applyDensity() {
+      const d = els.density.value;
+      if (d === 'tiny') {
+        document.documentElement.style.setProperty('--cardW', '62px');
+        document.documentElement.style.setProperty('--cardImgH', '92px');
+      } else if (d === 'normal') {
+        document.documentElement.style.setProperty('--cardW', '96px');
+        document.documentElement.style.setProperty('--cardImgH', '140px');
+      } else {
+        document.documentElement.style.setProperty('--cardW', '76px');
+        document.documentElement.style.setProperty('--cardImgH', '110px');
+      }
+    }
+    function matches(card, q) {
+      if (!q) return true;
+      const m = getMeaning(card);
+      const hay = [card.name, cardGroupLabel(card), card.keywords, m.core, m.light, m.shadow, m.advice, m.day, m.formula].join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+    function filterCards() {
+      const group = els.groupFilter.value;
+      const mode = els.modeFilter.value;
+      const q = els.search.value.trim();
+      filtered = CARDS.filter(card => {
+        if (group !== 'all' && card.type !== group && card.suit !== group) return false;
+        if (mode === 'favorites' && !favorites.has(card.id)) return false;
+        if (mode === 'court' && !isCourt(card)) return false;
+        if (mode === 'aces' && card.number !== '01') return false;
+        return matches(card, q);
+      });
+      renderGrid();
+    }
+    function renderGrid() {
+      els.grid.innerHTML = filtered.map((card, index) => `
+        <button class="tile ${favorites.has(card.id) ? 'favorite' : ''}" data-id="${card.id}" data-index="${index}" title="${escapeHtml(card.name)}">
+          <span class="favMark">★</span>
+          <img src="${escapeHtml(imgSrc(card))}" alt="${escapeHtml(card.name)}" loading="lazy" onerror="this.closest('.tile').classList.add('missing')" />
+          <span class="name">${escapeHtml(card.name)}</span>
+          <span class="meta">${escapeHtml(cardGroupLabel(card))}</span>
+        </button>`).join('');
+      els.countInfo.textContent = `Показано ${filtered.length} из ${CARDS.length} карт · ассеты: ${normalizeBase(assetBase)}`;
+    }
+    function detailHtml(card) {
+      const m = getMeaning(card);
+      return `
+        <div class="detailGrid">
+          <section class="box wide"><h3>Ядро карты</h3><p>${escapeHtml(m.core)}</p></section>
+          <section class="box"><h3>Светлая сторона</h3><p>${escapeHtml(m.light)}</p></section>
+          <section class="box"><h3>Тень и риск</h3><p>${escapeHtml(m.shadow)}</p></section>
+          <section class="box"><h3>Совет</h3><p>${escapeHtml(m.advice)}</p></section>
+          <section class="box"><h3>Карта дня</h3><p>${escapeHtml(m.day)}</p></section>
+          <section class="box"><h3>Любовь и отношения</h3><p>${escapeHtml(relationText(card))}</p></section>
+          <section class="box"><h3>Работа и деньги</h3><p>${escapeHtml(workText(card))}</p></section>
+          <section class="box"><h3>Да / нет</h3><p>${escapeHtml(yesNo(card))}</p></section>
+          <section class="box wide"><h3>Как запомнить</h3><p>${escapeHtml(m.formula)}</p></section>
+          <section class="box wide trainingPanel"><h3>Вопрос для тренировки</h3><p>${escapeHtml(trainingQuestion(card))}</p></section>
+        </div>
+        <p class="footerNote">Подсказка: трактовка уточняется вопросом и позицией карты. Одна и та же карта в позиции «ресурс», «риск» и «итог» читается по-разному.</p>`;
+    }
+    function relationText(card) {
+      if (card.type === 'major') return `В отношениях карта показывает архетип: ${card.core}. Смотри, это ресурс связи или сценарий, который управляет людьми.`;
+      const suitMap = { wands: 'страсть, инициативу и темп сближения', cups: 'чувства, привязанность и эмоциональный обмен', swords: 'разговоры, дистанцию, конфликты и ясность', pentacles: 'надежность, быт, деньги и реальные вложения' };
+      return `${card.keywords}. В отношениях масть показывает ${suitMap[card.suit]}.`;
+    }
+    function workText(card) {
+      if (card.type === 'major') return `В работе карта говорит о крупной теме: ${card.keywords}. Это может быть стиль решения, этап проекта или урок роли.`;
+      const suitMap = { wands: 'инициативы, лидерства, запусков и конкуренции', cups: 'команды, атмосферы, сервиса и творческой эмпатии', swords: 'аналитики, споров, документов, решений и стратегии', pentacles: 'денег, сроков, качества, ресурсов и устойчивого результата' };
+      return `${card.keywords}. В работе масть чаще касается ${suitMap[card.suit]}.`;
+    }
+    function trainingQuestion(card) {
+      if (card.type === 'major') return `Представь, что ${card.name} выпала как совет. Как ты объяснишь человеку ${card.core} без мистики и страшных формулировок?`;
+      return `Собери трактовку из формулы: ${SUITS[card.suit].title} плюс ${card.rank}. Что меняется, если карта стоит в позиции «риск», а что, если в позиции «ресурс»?`;
+    }
+    function setRevealState(force) {
+      revealed = typeof force === 'boolean' ? force : !revealed;
+      els.modalRoot.classList.toggle('hiddenMeaning', training && !revealed);
+      els.revealBtn.textContent = training && !revealed ? 'Показать' : 'Скрыть';
+      els.revealBtn.style.display = training ? '' : 'none';
+    }
+    function openCardByFilteredIndex(index) {
+      if (!filtered.length) return;
+      currentIndex = (index + filtered.length) % filtered.length;
+      const card = filtered[currentIndex];
+      const meaning = getMeaning(card);
+      els.modalTitle.textContent = card.name;
+      els.modalSub.textContent = `${currentIndex + 1} / ${filtered.length} · ${cardGroupLabel(card)} · ${card.type === 'major' ? 'Старший аркан' : `${SUITS[card.suit].element}, ${card.rank}`}`;
+      els.modalImg.src = imgSrc(card);
+      els.modalImg.alt = card.name;
+      els.chips.innerHTML = [cardGroupLabel(card), ...(card.type === 'major' ? ['архетип'] : [SUITS[card.suit].element, card.rank]), ...card.keywords.split(',').slice(0,4).map(s => s.trim())]
+        .map(chip => `<span class="chip">${escapeHtml(chip)}</span>`).join('');
+      els.detailBody.innerHTML = detailHtml(card);
+      els.favBtn.textContent = favorites.has(card.id) ? '★ Убрать' : '☆ В избранное';
+      els.modalRoot.classList.toggle('trainingOn', training);
+      setRevealState(!training);
+      if (!els.dialog.open) els.dialog.showModal();
+    }
+    function openByCard(card) {
+      const idx = filtered.findIndex(c => c.id === card.id);
+      if (idx >= 0) openCardByFilteredIndex(idx);
+    }
+    function currentCard() { return filtered[currentIndex]; }
+    function toggleFavorite() {
+      const card = currentCard();
+      if (!card) return;
+      if (favorites.has(card.id)) favorites.delete(card.id); else favorites.add(card.id);
+      saveFavorites();
+      els.favBtn.textContent = favorites.has(card.id) ? '★ Убрать' : '☆ В избранное';
+      renderGrid();
+    }
+    function drawCard(seedMode) {
+      const pool = filtered.length ? filtered : CARDS;
+      let index;
+      if (seedMode === 'day') {
+        const key = new Date().toISOString().slice(0,10);
+        let hash = 0;
+        for (const ch of key) hash = ((hash << 5) - hash + ch.charCodeAt(0)) | 0;
+        index = Math.abs(hash) % pool.length;
+      } else {
+        index = Math.floor(Math.random() * pool.length);
+      }
+      openByCard(pool[index]);
+    }
+    function updateTrainingButton() {
+      els.trainingToggle.classList.toggle('active', training);
+      els.trainingToggle.textContent = training ? 'Тренировка включена' : 'Тренировка';
+      localStorage.setItem('tarot-reference-training', training ? '1' : '0');
+    }
+
+    els.grid.addEventListener('click', e => {
+      const tile = e.target.closest('.tile');
+      if (!tile) return;
+      openCardByFilteredIndex(Number(tile.dataset.index));
+    });
+    [els.search, els.groupFilter, els.modeFilter].forEach(el => el.addEventListener('input', filterCards));
+    els.density.addEventListener('input', () => { applyDensity(); renderGrid(); });
+    els.closeBtn.addEventListener('click', () => els.dialog.close());
+    els.prevBtn.addEventListener('click', () => openCardByFilteredIndex(currentIndex - 1));
+    els.nextBtn.addEventListener('click', () => openCardByFilteredIndex(currentIndex + 1));
+    els.favBtn.addEventListener('click', toggleFavorite);
+    els.revealBtn.addEventListener('click', () => setRevealState());
+    els.randomBtn.addEventListener('click', () => drawCard('random'));
+    els.dayBtn.addEventListener('click', () => drawCard('day'));
+    els.trainingToggle.addEventListener('click', () => { training = !training; updateTrainingButton(); if (els.dialog.open) openCardByFilteredIndex(currentIndex); });
+    els.assetToggle.addEventListener('click', () => els.assetPanel.classList.toggle('open'));
+    els.saveAssetBase.addEventListener('click', () => { assetBase = normalizeBase(els.assetBase.value); localStorage.setItem('tarot-reference-asset-base', assetBase); renderGrid(); });
+    els.useRelative.addEventListener('click', () => { els.assetBase.value = RELATIVE_BASE; assetBase = RELATIVE_BASE; localStorage.setItem('tarot-reference-asset-base', assetBase); renderGrid(); });
+    els.useLocalFull.addEventListener('click', () => { els.assetBase.value = LOCAL_FULL_BASE; assetBase = LOCAL_FULL_BASE; localStorage.setItem('tarot-reference-asset-base', assetBase); renderGrid(); });
+    els.useRemote.addEventListener('click', () => { els.assetBase.value = REMOTE_BASE; assetBase = REMOTE_BASE; localStorage.setItem('tarot-reference-asset-base', assetBase); renderGrid(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && document.activeElement !== els.search) { e.preventDefault(); els.search.focus(); return; }
+      if (els.dialog.open) {
+        if (e.key === 'ArrowLeft') openCardByFilteredIndex(currentIndex - 1);
+        if (e.key === 'ArrowRight') openCardByFilteredIndex(currentIndex + 1);
+        if (e.key.toLowerCase() === 'f') toggleFavorite();
+        if (e.key === ' ') { e.preventDefault(); if (training) setRevealState(); }
+      }
+    });
+
+    els.assetBase.value = assetBase;
+    updateTrainingButton();
+    applyDensity();
+    filterCards();
+  </script>
+</body>
+</html>
