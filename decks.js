@@ -227,7 +227,7 @@ function buildMarseilleNativeTitles() {
 window.TAROT_DECKS = [
   {
     id: "rws-classic",
-    name: "Классика",
+    name: "\u041A\u043B\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043A\u043E\u043B\u043E\u0434\u0430 \u0422\u0430\u0440\u043E",
     description: "Rider-Waite-Smith, локальные изображения.",
     cssClass: "deck-rws-classic",
     status: "stable",
@@ -237,7 +237,7 @@ window.TAROT_DECKS = [
   },
   {
     id: "rws-dark-classic",
-    name: "Темная классика",
+    name: "\u041A\u043B\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043A\u043E\u043B\u043E\u0434\u0430 \u0422\u0430\u0440\u043E, \u0442\u0435\u043C\u043D\u0430\u044F",
     description: "CSS-режим поверх локальной Rider-Waite-Smith.",
     cssClass: "deck-rws-dark-classic",
     status: "stable",
