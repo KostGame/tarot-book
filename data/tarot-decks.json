@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "sourceRepository": "KostGame/Tarot",
+  "sourceRef": "origin/main",
+  "runtimeHotlinking": false,
+  "decks": [
+    {
+      "id": "rws-classic",
+      "name": "Классика",
+      "coverage": "full",
+      "cards": 78,
+      "assetPath": "assets/cards",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Rider-Waite-Smith_tarot_deck_(TaionWC)"
+    },
+    {
+      "id": "rws-dark-classic",
+      "name": "Темная классика",
+      "coverage": "full",
+      "cards": 78,
+      "assetPath": "assets/cards",
+      "mode": "css-filter",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Rider-Waite-Smith_tarot_deck_(TaionWC)"
+    },
+    {
+      "id": "marseille-historical",
+      "name": "Tarot de Marseille",
+      "coverage": "major-only",
+      "cards": 22,
+      "assetPath": "assets/cards-experimental/marseille-historical",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Tarot_de_Marseille_-_Nicolas_Conver_1760",
+      "licenseNote": "CC BY-SA 4.0 на страницах файлов Commons; проверьте атрибуцию при дальнейшем использовании."
+    },
+    {
+      "id": "jean-dodal-marseille",
+      "name": "Jean Dodal Tarot",
+      "coverage": "major-only",
+      "cards": 22,
+      "assetPath": "assets/cards-experimental/jean-dodal-marseille",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Tarot_de_Marseille_-_Jean_Dodal",
+      "licenseNote": "Public domain scans on Commons; проверьте file pages и tarot-history.com credit при дальнейшем использовании."
+    },
+    {
+      "id": "egyptian-falconnier",
+      "name": "Egyptian Tarot",
+      "coverage": "major-only",
+      "cards": 22,
+      "assetPath": "assets/cards-experimental/egyptian-falconnier",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Egyptian_Tarot_(Falconnier)",
+      "licenseNote": "Commons file pages for the 22 card images are marked CC0 / public domain dedication."
+    },
+    {
+      "id": "tarot-nouveau-grimaud-1898",
+      "name": "Tarot Nouveau",
+      "coverage": "full",
+      "cards": 78,
+      "assetPath": "assets/cards-experimental/tarot-nouveau-grimaud-1898",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Tarot_nouveau_-_Grimaud_-_1898",
+      "licenseNote": "Public domain scan on Commons; back side excluded from the 78-card pack."
+    },
+    {
+      "id": "tarocco-piemontese-solesio-1865",
+      "name": "Tarocco Piemontese",
+      "coverage": "full",
+      "cards": 78,
+      "assetPath": "assets/cards-experimental/tarocco-piemontese-solesio-1865",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Piedmontese_tarot_deck_-_Solesio_-_1865",
+      "licenseNote": "Public domain scans on Commons; back side excluded from the 78-card pack."
+    },
+    {
+      "id": "pixel-tarot",
+      "name": "Pixel Tarot",
+      "coverage": "full",
+      "cards": 78,
+      "assetPath": "assets/cards-experimental/pixel-tarot",
+      "sourceUrl": "https://papitas319.itch.io/tarot-pixel-assets",
+      "licenseNote": "Name your own price; требуется ручная проверка лицензии пользователем."
+    }
+  ]
+}
