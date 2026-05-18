@@ -55,6 +55,16 @@ function buildFullDeckMap(basePath, extension = "jpg") {
   return map;
 }
 
+function buildMajorCourtDeckMap(basePath, extension = "png") {
+  const map = buildMajorDeckMap(basePath, extension);
+  TAROT_MINOR_SUITS.forEach(suit => {
+    ["11-page", "12-knight", "13-queen", "14-king"].forEach(rank => {
+      map[`${suit}-${rank}`] = `${basePath}/${suit}-${rank}.${extension}`;
+    });
+  });
+  return map;
+}
+
 function buildTarotNouveauNativeTitles() {
   const titles = { "major-00-fool": "Excuse" };
   TAROT_MAJOR_IDS.slice(1).forEach((cardId, index) => {
@@ -224,10 +234,154 @@ function buildMarseilleNativeTitles() {
   };
 }
 
+function buildSolaBuscaNativeTitles() {
+  const titles = {
+    "major-00-fool": "Mato",
+    "major-01-magician": "Panfilio",
+    "major-02-high-priestess": "Postumio",
+    "major-03-empress": "Lenpio",
+    "major-04-emperor": "Mario",
+    "major-05-hierophant": "Catulo",
+    "major-06-lovers": "Sesto",
+    "major-07-chariot": "Deo Tauro",
+    "major-08-strength": "Nerone",
+    "major-09-hermit": "Falco",
+    "major-10-wheel-of-fortune": "Venturio",
+    "major-11-justice": "Tulio",
+    "major-12-hanged-man": "Carbone",
+    "major-13-death": "Catone",
+    "major-14-temperance": "Bocho",
+    "major-15-devil": "Metelo",
+    "major-16-tower": "Olivo",
+    "major-17-star": "Ipeo",
+    "major-18-moon": "Lentulo",
+    "major-19-sun": "Sabino",
+    "major-20-judgement": "Nenbroto",
+    "major-21-world": "Nabucho-denasor",
+  };
+  const suitNames = {
+    cups: "Coppe",
+    pentacles: "Denari",
+    wands: "Bastoni",
+    swords: "Spade",
+  };
+  const rankNames = {
+    "01-ace": "Asso",
+    "02-two": "2",
+    "03-three": "3",
+    "04-four": "4",
+    "05-five": "5",
+    "06-six": "6",
+    "07-seven": "7",
+    "08-eight": "8",
+    "09-nine": "9",
+    "10-ten": "10",
+    "11-page": "Fante",
+    "12-knight": "Cavaliere",
+    "13-queen": "Regina",
+    "14-king": "Re",
+  };
+  Object.entries(suitNames).forEach(([suit, suitTitle]) => {
+    Object.entries(rankNames).forEach(([rankId, rankTitle]) => {
+      titles[`${suit}-${rankId}`] = `${rankTitle} di ${suitTitle}`;
+    });
+  });
+  titles["swords-11-page"] = "Fante di Spade";
+  titles["swords-12-knight"] = "Amone";
+  titles["swords-13-queen"] = "Olinpia";
+  titles["swords-14-king"] = "Alecxandro M.";
+  titles["cups-12-knight"] = "Natanabo";
+  titles["cups-13-queen"] = "Polisena";
+  titles["cups-14-king"] = "Lucio Cecilio R.";
+  titles["pentacles-12-knight"] = "Sarafino";
+  titles["pentacles-13-queen"] = "Elena";
+  titles["pentacles-14-king"] = "R. Filipo";
+  titles["wands-12-knight"] = "Apolino";
+  titles["wands-13-queen"] = "Palas";
+  titles["wands-14-king"] = "Levio Plauto R.";
+  return titles;
+}
+
+function buildOswaldWirthNativeTitles() {
+  return {
+    "major-00-fool": "Le Fou",
+    "major-01-magician": "Le Bateleur",
+    "major-02-high-priestess": "La Papesse",
+    "major-03-empress": "L'Impératrice",
+    "major-04-emperor": "L'Empereur",
+    "major-05-hierophant": "Le Pape",
+    "major-06-lovers": "L'Amoureux",
+    "major-07-chariot": "Le Chariot",
+    "major-08-strength": "La Force",
+    "major-09-hermit": "L'Ermite",
+    "major-10-wheel-of-fortune": "La Roue de Fortune",
+    "major-11-justice": "La Justice",
+    "major-12-hanged-man": "Le Pendu",
+    "major-13-death": "La Mort",
+    "major-14-temperance": "La Tempérance",
+    "major-15-devil": "Le Diable",
+    "major-16-tower": "Le Feu du Ciel",
+    "major-17-star": "Les Étoiles",
+    "major-18-moon": "La Lune",
+    "major-19-sun": "Le Soleil",
+    "major-20-judgement": "Le Jugement",
+    "major-21-world": "Le Monde",
+  };
+}
+
+function buildUnicodePlayingCardsNativeTitles() {
+  const titles = {
+    "major-00-fool": "PLAYING CARD FOOL",
+    "major-01-magician": "PLAYING CARD TRUMP-1",
+    "major-02-high-priestess": "PLAYING CARD TRUMP-2",
+    "major-03-empress": "PLAYING CARD TRUMP-3",
+    "major-04-emperor": "PLAYING CARD TRUMP-4",
+    "major-05-hierophant": "PLAYING CARD TRUMP-5",
+    "major-06-lovers": "PLAYING CARD TRUMP-6",
+    "major-07-chariot": "PLAYING CARD TRUMP-7",
+    "major-08-strength": "PLAYING CARD TRUMP-8",
+    "major-09-hermit": "PLAYING CARD TRUMP-9",
+    "major-10-wheel-of-fortune": "PLAYING CARD TRUMP-10",
+    "major-11-justice": "PLAYING CARD TRUMP-11",
+    "major-12-hanged-man": "PLAYING CARD TRUMP-12",
+    "major-13-death": "PLAYING CARD TRUMP-13",
+    "major-14-temperance": "PLAYING CARD TRUMP-14",
+    "major-15-devil": "PLAYING CARD TRUMP-15",
+    "major-16-tower": "PLAYING CARD TRUMP-16",
+    "major-17-star": "PLAYING CARD TRUMP-17",
+    "major-18-moon": "PLAYING CARD TRUMP-18",
+    "major-19-sun": "PLAYING CARD TRUMP-19",
+    "major-20-judgement": "PLAYING CARD TRUMP-20",
+    "major-21-world": "PLAYING CARD TRUMP-21",
+  };
+  const suitNames = {
+    swords: "SPADES",
+    cups: "HEARTS",
+    pentacles: "DIAMONDS",
+    wands: "CLUBS",
+  };
+  const rankNames = {
+    "11-page": "JACK",
+    "12-knight": "KNIGHT",
+    "13-queen": "QUEEN",
+    "14-king": "KING",
+  };
+  Object.entries(suitNames).forEach(([suit, suitTitle]) => {
+    Object.entries(rankNames).forEach(([rankId, rankTitle]) => {
+      titles[`${suit}-${rankId}`] = `PLAYING CARD ${rankTitle} OF ${suitTitle}`;
+    });
+  });
+  return titles;
+}
+
+function buildVeilOfFateMap(basePath) {
+  return buildMajorCourtDeckMap(basePath, "png");
+}
+
 window.TAROT_DECKS = [
   {
     id: "rws-classic",
-    name: "\u041A\u043B\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043A\u043E\u043B\u043E\u0434\u0430 \u0422\u0430\u0440\u043E",
+    name: "Классическая колода Таро",
     description: "Rider-Waite-Smith, локальные изображения.",
     cssClass: "deck-rws-classic",
     status: "stable",
@@ -237,7 +391,7 @@ window.TAROT_DECKS = [
   },
   {
     id: "rws-dark-classic",
-    name: "\u041A\u043B\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043A\u043E\u043B\u043E\u0434\u0430 \u0422\u0430\u0440\u043E, \u0442\u0435\u043C\u043D\u0430\u044F",
+    name: "Классическая колода Таро, темная",
     description: "CSS-режим поверх локальной Rider-Waite-Smith.",
     cssClass: "deck-rws-dark-classic",
     status: "stable",
@@ -317,4 +471,92 @@ window.TAROT_DECKS = [
     licenseNote: "Name your own price; требуется ручная проверка лицензии пользователем.",
     cards: buildFullDeckMap("assets/cards-experimental/pixel-tarot", "png"),
   },
+  {
+    id: "sola-busca",
+    name: "Sola Busca",
+    label: "Sola Busca",
+    optionLabel: "Sola Busca",
+    description: "Historical Italian gaming tarot; educational layer over the full 78-card pack.",
+    cssClass: "deck-sola-busca",
+    status: "experimental",
+    coverage: "full",
+    fallbackDeckId: "rws-classic",
+    sourceUrl: "https://commons.wikimedia.org/wiki/Category:Sola-Busca_tarot_deck",
+    licenseNote: "Public domain scans on Commons; extra non-core files were excluded from the curated 78-card pack.",
+    nativeTitles: buildSolaBuscaNativeTitles(),
+    cards: buildFullDeckMap("assets/cards-experimental/sola-busca", "jpg"),
+  },
+  {
+    id: "oswald-wirth-tarot",
+    name: "Oswald Wirth Tarot",
+    label: "Oswald Wirth",
+    optionLabel: "Oswald Wirth",
+    description: "Oswald Wirth 1889, historical major-only pack with a title-based mapping layer.",
+    cssClass: "deck-oswald-wirth-tarot",
+    status: "experimental",
+    coverage: "major-only",
+    fallbackDeckId: "rws-classic",
+    sourceUrl: "https://commons.wikimedia.org/wiki/Category:Oswald_Wirth_tarot_deck",
+    licenseNote: "Commons file pages for the 22 numbered scans describe the images as public domain. Recheck the individual Commons file pages if the assets are reused outside this project.",
+    nativeTitles: buildOswaldWirthNativeTitles(),
+    cards: buildMajorDeckMap("assets/cards-experimental/oswald-wirth-tarot", "jpg"),
+  },
+  {
+    id: "unicode-playing-cards",
+    name: "Unicode Playing Cards",
+    label: "Unicode",
+    optionLabel: "Unicode",
+    description: "Unicode playing card glyphs rendered as tarot-sized SVG cards; major arcana and court cards only.",
+    cssClass: "deck-unicode-playing-cards",
+    status: "experimental",
+    coverage: "major-court",
+    fallbackDeckId: "rws-classic",
+    sourceUrl: "https://en.wikipedia.org/wiki/Playing_Cards_(Unicode_block)",
+    licenseNote: "Local SVG renders of Unicode playing card characters; no external image assets or runtime hotlinks.",
+    nativeTitles: buildUnicodePlayingCardsNativeTitles(),
+    cards: buildMajorCourtDeckMap("assets/cards-experimental/unicode-playing-cards", "svg"),
+  },
+  {
+    id: "veil-of-fate",
+    name: "Veil of Fate",
+    label: "Veil of Fate",
+    optionLabel: "Veil of Fate",
+    description: "?????? partial deck: major arcana ? court cards.",
+    cssClass: "deck-veil-of-fate",
+    status: "experimental",
+    coverage: "major-court",
+    fallbackDeckId: "rws-classic",
+    sourceUrl: "https://dajeki.itch.io/veil-of-fate-mystic-tarot-icons",
+    licenseNote: "CC0 ?? ???????? ?????????, AI-assisted, ????????? ?????? ???????? ?????????????.",
+    cards: buildVeilOfFateMap("assets/cards-experimental/veil-of-fate"),
+  },
+  {
+    id: "major-pixel-jcanabal",
+    name: "Pixel Mono",
+    label: "Pixel Mono",
+    optionLabel: "Pixel Mono",
+    description: "Monochrome pixel major arcana.",
+    cssClass: "deck-major-pixel-jcanabal",
+    status: "experimental",
+    coverage: "major-only",
+    fallbackDeckId: "rws-classic",
+    sourceUrl: "https://jcanabal.itch.io/major-arcana-pixel-art-free",
+    licenseNote: "Free major arcana pack, ????????? ?????? ???????? ?????????????.",
+    cards: buildMajorDeckMap("assets/cards-experimental/major-pixel-jcanabal", "png"),
+  },
+  {
+    id: "major-pixel-zune",
+    name: "Pixel Zune",
+    label: "Pixel Zune",
+    optionLabel: "Pixel Zune",
+    description: "Major arcana pixel deck.",
+    cssClass: "deck-major-pixel-zune",
+    status: "experimental",
+    coverage: "major-only",
+    fallbackDeckId: "rws-classic",
+    sourceUrl: "https://starsinabox.itch.io/majorarcana",
+    licenseNote: "Free / name your own price, ????????? ?????? ???????? ?????????????.",
+    cards: buildMajorDeckMap("assets/cards-experimental/major-pixel-zune", "png"),
+  },
+
 ];
