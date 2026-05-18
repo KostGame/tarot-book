@@ -6,7 +6,7 @@
   "decks": [
     {
       "id": "rws-classic",
-      "name": "Классика",
+      "name": "Классическая колода Таро",
       "coverage": "full",
       "cards": 78,
       "assetPath": "assets/cards",
@@ -14,7 +14,7 @@
     },
     {
       "id": "rws-dark-classic",
-      "name": "Темная классика",
+      "name": "Классическая колода Таро, темная",
       "coverage": "full",
       "cards": 78,
       "assetPath": "assets/cards",
@@ -74,6 +74,60 @@
       "assetPath": "assets/cards-experimental/pixel-tarot",
       "sourceUrl": "https://papitas319.itch.io/tarot-pixel-assets",
       "licenseNote": "Name your own price; требуется ручная проверка лицензии пользователем."
+    },
+    {
+      "id": "sola-busca",
+      "name": "Sola Busca",
+      "coverage": "full",
+      "cards": 78,
+      "assetPath": "assets/cards-experimental/sola-busca",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Sola-Busca_tarot_deck",
+      "licenseNote": "Public domain scans on Commons; extra non-core files were excluded from the curated 78-card pack."
+    },
+    {
+      "id": "oswald-wirth-tarot",
+      "name": "Oswald Wirth Tarot",
+      "coverage": "major-only",
+      "cards": 22,
+      "assetPath": "assets/cards-experimental/oswald-wirth-tarot",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Oswald_Wirth_tarot_deck",
+      "licenseNote": "Commons file pages for the 22 numbered scans describe the images as public domain. Recheck the individual Commons file pages if the assets are reused outside this project."
+    },
+    {
+      "id": "unicode-playing-cards",
+      "name": "Unicode Playing Cards",
+      "coverage": "major-court",
+      "cards": 38,
+      "assetPath": "assets/cards-experimental/unicode-playing-cards",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Playing_Cards_(Unicode_block)",
+      "licenseNote": "Local SVG renders of Unicode playing card characters; no external image assets or runtime hotlinks."
+    },
+    {
+      "id": "veil-of-fate",
+      "name": "Veil of Fate",
+      "coverage": "major-court",
+      "cards": 38,
+      "assetPath": "assets/cards-experimental/veil-of-fate",
+      "sourceUrl": "https://dajeki.itch.io/veil-of-fate-mystic-tarot-icons",
+      "licenseNote": "CC0 ?? ???????? ?????????, AI-assisted, ????????? ?????? ???????? ?????????????."
+    },
+    {
+      "id": "major-pixel-jcanabal",
+      "name": "Pixel Mono",
+      "coverage": "major-only",
+      "cards": 22,
+      "assetPath": "assets/cards-experimental/major-pixel-jcanabal",
+      "sourceUrl": "https://jcanabal.itch.io/major-arcana-pixel-art-free",
+      "licenseNote": "Free major arcana pack, ????????? ?????? ???????? ?????????????."
+    },
+    {
+      "id": "major-pixel-zune",
+      "name": "Pixel Zune",
+      "coverage": "major-only",
+      "cards": 22,
+      "assetPath": "assets/cards-experimental/major-pixel-zune",
+      "sourceUrl": "https://starsinabox.itch.io/majorarcana",
+      "licenseNote": "Free / name your own price, ????????? ?????? ???????? ?????????????."
     }
   ]
 }
