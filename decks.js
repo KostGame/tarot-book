@@ -521,13 +521,13 @@ window.TAROT_DECKS = [
     name: "Veil of Fate",
     label: "Veil of Fate",
     optionLabel: "Veil of Fate",
-    description: "?????? partial deck: major arcana ? court cards.",
+    description: "Частичная колода: старшие арканы и придворные карты.",
     cssClass: "deck-veil-of-fate",
     status: "experimental",
     coverage: "major-court",
     fallbackDeckId: "rws-classic",
     sourceUrl: "https://dajeki.itch.io/veil-of-fate-mystic-tarot-icons",
-    licenseNote: "CC0 ?? ???????? ?????????, AI-assisted, ????????? ?????? ???????? ?????????????.",
+    licenseNote: "CC0, AI-assisted; требует ручной проверки лицензии.",
     cards: buildVeilOfFateMap("assets/cards-experimental/veil-of-fate"),
   },
   {
@@ -541,7 +541,7 @@ window.TAROT_DECKS = [
     coverage: "major-only",
     fallbackDeckId: "rws-classic",
     sourceUrl: "https://jcanabal.itch.io/major-arcana-pixel-art-free",
-    licenseNote: "Free major arcana pack, ????????? ?????? ???????? ?????????????.",
+    licenseNote: "Free major arcana pack; требует ручной проверки лицензии.",
     cards: buildMajorDeckMap("assets/cards-experimental/major-pixel-jcanabal", "png"),
   },
   {
@@ -555,7 +555,7 @@ window.TAROT_DECKS = [
     coverage: "major-only",
     fallbackDeckId: "rws-classic",
     sourceUrl: "https://starsinabox.itch.io/majorarcana",
-    licenseNote: "Free / name your own price, ????????? ?????? ???????? ?????????????.",
+    licenseNote: "Free / name your own price; требует ручной проверки лицензии.",
     cards: buildMajorDeckMap("assets/cards-experimental/major-pixel-zune", "png"),
   },
 
