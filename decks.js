@@ -329,6 +329,14 @@ function buildOswaldWirthNativeTitles() {
   };
 }
 
+function buildOswaldWirthMajorDeckMap() {
+  return {
+    ...buildMajorDeckMap("assets/cards-experimental/oswald-wirth-tarot", "jpg"),
+    "major-08-strength": "assets/cards-experimental/oswald-wirth-tarot/major-11-justice.jpg",
+    "major-11-justice": "assets/cards-experimental/oswald-wirth-tarot/major-08-strength.jpg",
+  };
+}
+
 function buildUnicodePlayingCardsNativeTitles() {
   const titles = {
     "major-00-fool": "PLAYING CARD FOOL",
@@ -499,7 +507,7 @@ window.TAROT_DECKS = [
     sourceUrl: "https://commons.wikimedia.org/wiki/Category:Oswald_Wirth_tarot_deck",
     licenseNote: "Commons file pages for the 22 numbered scans describe the images as public domain. Recheck the individual Commons file pages if the assets are reused outside this project.",
     nativeTitles: buildOswaldWirthNativeTitles(),
-    cards: buildMajorDeckMap("assets/cards-experimental/oswald-wirth-tarot", "jpg"),
+    cards: buildOswaldWirthMajorDeckMap(),
   },
   {
     id: "unicode-playing-cards",
